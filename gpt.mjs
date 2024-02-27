@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 import "jQuery";
-const openai = new OpenAI({ apiKey: "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" });
+export const token = process.env['API_TOKEN'];
+const openai = new OpenAI({ apiKey: token });
 
 function get_high_risk_areas(date, num = 10){
     fetch('https://boasandreasen.github.io/testAPI/%d.json',date)
