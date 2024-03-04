@@ -38,7 +38,7 @@ function get_high_risk_areas(date, num = 10){
     return top_values;
 }
 
-const tools = [
+/*const tools = [
     {
         "type": "function",
         "function": {
@@ -82,11 +82,72 @@ const tools = [
             },
         }
     }
+]*/
+
+const tools = [
+    {
+        "type": "function",
+        "function": {
+            "name": "get_current_weather",
+            "description": "Get the current weather",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "location": {
+                        "type": "string",
+                        "description": "The city and state, e.g. San Francisco, CA",
+                    },
+                    "format": {
+                        "type": "string",
+                        "enum": ["celsius", "fahrenheit"],
+                        "description": "The temperature unit to use. Infer this from the users location.",
+                    },
+                },
+                "required": ["location", "format"],
+            },
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_n_day_weather_forecast",
+            "description": "Get an N-day weather forecast",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "location": {
+                        "type": "string",
+                        "description": "The city and state, e.g. San Francisco, CA",
+                    },
+                    "format": {
+                        "type": "string",
+                        "enum": ["celsius", "fahrenheit"],
+                        "description": "The temperature unit to use. Infer this from the users location.",
+                    },
+                    "num_days": {
+                        "type": "integer",
+                        "description": "The number of days to forecast",
+                    }
+                },
+                "required": ["location", "format", "num_days"]
+            },
+        }
+    },
 ]
 
-
-
+const messages = [
+    {"role": "system", "content": "Don't make assumptions about what values to plug into functions. Ask for clarification if a user request is ambiguous."},
+    {"role": "user", "content": "What's the weather like today in cairo"}
+]
 const response = await openai.chat.completions.create({
+        model:"gpt-3.5-turbo-0125",
+        messages:messages,
+        tools:tools
+}
+)
+console.log(response["choices"][0]["message"]);
+
+/*const response = await openai.chat.completions.create({
     model:"gpt-3.5-turbo-0125",
     messages:[
         //{"role": "system", "content": ""}
@@ -94,7 +155,7 @@ const response = await openai.chat.completions.create({
         {"role": "user", "content": "What's the weather like today in Glasgow"}
     ],
     tools: tools
-})
+})*/
 
-const text_response = response["choices"][0]["message"];
-console.log(text_response);
+//const text_response = response["choices"][0]["tool_calls"][0]["functionName"];
+
